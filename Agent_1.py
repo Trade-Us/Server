@@ -3,6 +3,10 @@ import random
 import numpy as np
 from model import mlp
 
+# DQN 의 중심적인 기능을 제공하는 Class 이다.
+# 실질적인 실행은 run.py 에 있다.
+# run.py: 목표신경망 update 주기, 주 신경망 학습 주기 및 시작 시점 (Observe: 처음엔 가중치가 없음), 
+# agent.py: target_network_update ok, memory 관리에 대하여..(remember)- deque maxlen 설정으로 괜춘
 class DQNAgent(object):
     """ A simple Deep Q agent """
 
@@ -16,6 +20,12 @@ class DQNAgent(object):
         self.epsilon_min = 0.01
         self.epsilon_decay = 0.995
         self.model = mlp(state_size, action_size) # Main 모델 객체
+        # target model 을  설정
+        self.target_model = mlp(state_size, action_size)
+
+    # target Network update 함수
+    def update_target_model():
+        self.target_model.set_weights(self.model.get_weights)
 
     # 각 Step에 대한결과 저장함수
     def remember(self, state, action, reward, next_state, done):
@@ -63,13 +73,14 @@ class DQNAgent(object):
 
         self.model.fit(states, target_f, epochs=1, verbose=0)
 
+        # epsilon depreacate
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
 
 
-  def load(self, name):
-    self.model.load_weights(name)
+    def load(self, name):
+        self.model.load_weights(name)
 
 
-  def save(self, name):
-    self.model.save_weights(name)
+    def save(self, name):
+        self.model.save_weights(name)
