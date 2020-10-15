@@ -17,8 +17,8 @@ class DQNAgent(object):
         self.memory = deque(maxlen=2000) # 각 step을 저장할 메모리
         self.gamma = 0.95 
         self.epsilon = 1.0
-        self.epsilon_min = 0.01
-        self.epsilon_decay = 0.995
+        self.epsilon_min = 0.0
+        self.epsilon_decay = 0.0005
         self.model = mlp(state_size, action_size) # Main 모델 객체
         # target model 을  설정
         self.target_model = mlp(state_size, action_size)
@@ -37,7 +37,7 @@ class DQNAgent(object):
         # exploitation vs exploration
         
         # if exploitation
-        if np.random.randrange() <= self.epsilon:
+        if np.random.rand() <= self.epsilon:
             return random.randrange(self.action_size)
 
         # if exploration
@@ -46,10 +46,10 @@ class DQNAgent(object):
         return np.argmax(act_values[0]) # returns action
 
     # 모델 학습 함수
-    def train(self, batch_size=32):
+    def replay(self, batch_size=32):
         """ vectorized implementation; 30x speed up compared with for loop """
         # 랜덤으로 메모리에서 Step에 대한 정보를 batch_size 만큼 가져오기
-        minbatch = random.sample(self.memory)
+        minibatch = random.sample(self.memory, batch_size)
 
         states = np.array([tup[0][0] for tup in minibatch])
         actions = np.array([tup[1] for tup in minibatch])
@@ -67,15 +67,16 @@ class DQNAgent(object):
 
         # Q(s, a)
         ## 학습을 위한 정답 Label 공정하기
-        target_f = self.model.predict(staets)
+        target_f = self.model.predict(states)
         ## 목표 신경망을 통해 전달된 target(value)값을 알맞은 action 자리에 넣어준다.  
         target_f[range(batch_size), actions] = target
 
         self.model.fit(states, target_f, epochs=1, verbose=0)
 
+    def deprecate_epsilon():
         # epsilon depreacate
         if self.epsilon > self.epsilon_min:
-            self.epsilon *= self.epsilon_decay
+            self.epsilon -= self.epsilon_decay
 
 
     def load(self, name):
