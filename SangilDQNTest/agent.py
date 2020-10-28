@@ -18,7 +18,7 @@ class DQNAgent(object):
         self.gamma = 0.95 
         self.epsilon = 1.0
         self.epsilon_min = 0.0
-        self.epsilon_decay = 0.0005
+        self.epsilon_decay = 0.0001
         self.model = mlp(state_size, action_size) # Main 모델 객체
         # target model 을  설정
         self.target_model = mlp(state_size, action_size)
@@ -59,7 +59,7 @@ class DQNAgent(object):
 
         # Q(s', a) -> for TD(target difference) Algorithm
         ## model -> target_model! (목표 신경망으로 바꾸자 []) 
-        target = rewards + self.gamma * np.argmax(self.model.predict(next_states), axis=1)
+        target = rewards + self.gamma * np.argmax(self.target_model.predict(next_states), axis=1)
         
         ## end state target is reward itself (no lookahead)
         ## 마지막 state의 target은 기존 reward로 진행.. why? 

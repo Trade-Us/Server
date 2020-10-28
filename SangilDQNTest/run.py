@@ -44,7 +44,10 @@ if __name__ == '__main__':
   TARGET_UPDATE_INTERVAL = 100
   time_step = 0
 
+  ## Action Collection
+  actions = np.zeros((args.episode, env.n_step))
 
+  ## Portfolio
   portfolio_value = []
 
   if args.mode == 'test':
@@ -59,7 +62,12 @@ if __name__ == '__main__':
     state = env.reset()
     state = scaler.transform([state])
     for time in range(env.n_step):
+      # Collecting Actions
+      actions[e, time] = action
+
+      # count step time
       time_step += 1
+
       # go step
       action = agent.act(state)
       next_state, reward, done, info = env.step(action)
@@ -72,19 +80,24 @@ if __name__ == '__main__':
 
       # episode done
       if done:
+        print(actions[e, : ], end="")
+        print(" ", end="")
         print("episode: {}/{}, episode end value: {}".format(
           e + 1, args.episode, info['cur_val']))
         portfolio_value.append(info['cur_val']) # append episode end portfolio value
         break
 
       # train Network
+      # train 에 대한 Observe 및 주기 설정
       if args.mode == 'train' and len(agent.memory) > args.batch_size and time_step > OBSERVE:
         agent.replay(args.batch_size)
 
+      # 입실론 감쇄에 대한 Observe 설정
       if args.mode == 'train' and e > OBSERVE:
         agent.deprecate_epsilon
-      # update target Network
-      if args.mode == 'train' and  time_step % TARGET_UPDATE_INTERVAL == 0:
+
+      # target Network 업데이트에 대한 주기 설정
+      if args.mode == 'train' and  time_step % TARGET_UPDATE_INTERVAL == 0 and time_step > OBSERVE:
         agent.update_target_model
 
     # Save Weights    
