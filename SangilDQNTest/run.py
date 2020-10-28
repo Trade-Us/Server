@@ -12,9 +12,9 @@ from utils import get_data, get_scaler, maybe_make_dir
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
-  parser.add_argument('-e', '--episode', type=int, default=10000,
+  parser.add_argument('-e', '--episode', type=int, default=2000,
                       help='number of episode to run')
-  parser.add_argument('-b', '--batch_size', type=int, default=128,
+  parser.add_argument('-b', '--batch_size', type=int, default=64,
                       help='batch size for experience replay')
   parser.add_argument('-i', '--initial_invest', type=int, default=2000000,
                       help='initial investment amount')
@@ -26,7 +26,7 @@ if __name__ == '__main__':
   maybe_make_dir('weights')
   maybe_make_dir('portfolio_val')
 
-  timestamp = time.strftime('%m%d')
+  timestamp = time.strftime('%m%d%S')
 
   data = np.around(get_data())
   train_data = data[:, :]

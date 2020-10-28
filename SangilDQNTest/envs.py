@@ -67,7 +67,7 @@ class TradingEnv(gym.Env):
     self.stock_price = self.stock_price_history[:, self.cur_step] # update price
     self._trade(action)
     cur_val = self._get_val()
-    reward = 10 if cur_val - prev_val > 0 else -100
+    reward = cur_val - 2000000 if cur_val > 2000000 else 2000000 - cur_val
     done = self.cur_step == self.n_step - 1
     info = {'cur_val': cur_val}
     return self._get_obs(), reward, done, info
