@@ -17,8 +17,8 @@ class DQNAgent(object):
         self.memory = deque(maxlen=2000) # 각 step을 저장할 메모리
         self.gamma = 0.95 
         self.epsilon = 1.0
-        self.epsilon_min = 0.0
-        self.epsilon_decay = 0.0001
+        self.epsilon_min = 0.001
+        self.epsilon_decay = 0.001
         self.model = mlp(state_size, action_size) # Main 모델 객체
         # target model 을  설정
         self.target_model = mlp(state_size, action_size)
