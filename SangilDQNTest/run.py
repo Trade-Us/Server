@@ -57,7 +57,7 @@ if __name__ == '__main__':
     # load trained weights
     agent.load(args.weights)
     # when test, the timestamp is same as time when weights was trained
-    timestamp = re.findall(r'\d{12}', args.weights)[0]
+    timestamp = re.findall(r'\d{6}', args.weights)[0]
 
   for e in range(args.episode):
     state = env.reset()
