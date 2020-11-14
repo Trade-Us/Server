@@ -1,6 +1,6 @@
 import pickle
 
-name = "1029-b64-e2000-train.p"
+name = "102906-b64-e2000-train.p"
 with open('portfolio_val/' + name, 'rb') as file:
     portfol_val = pickle.load(file)
     #print(portfol_val)
